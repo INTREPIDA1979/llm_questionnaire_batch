@@ -21,11 +21,10 @@ logger = logging.getLogger()
 
 db = None
 
-GOOGLE_AI="Gemini"
-#GOOGLE_AI="VertexAI"
+GOOGLE_AI=os.environ.get("GOOGLE_AI")
 
 # LLM初期化
-if GOOGLE_AI == "Gemini":
+if GOOGLE_AI == "GEMINI":
     llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash")
 else:
     llm = VertexAI(model="gemini-1.5-flash")
@@ -130,7 +129,7 @@ def main():
             resp = llm.invoke(sys_msg + questionnaire.question)
             print(str(resp))
             
-            if GOOGLE_AI == "Gemini": # Geminiの場合はresp.content  VertexAIの場合はresp
+            if GOOGLE_AI == "GEMINI": # Geminiの場合はresp.content  VertexAIの場合はresp
                 resp = resp.content
 
             answer = answer + "■" + personality.name + "," + personality.sex_name + "," + str(personality.age) + "歳," + resp + "\n"
@@ -138,7 +137,7 @@ def main():
         # まとめ
         result = llm.invoke("あなたは優秀なアンケート集計者です。次のアンケート回答を200文字程度で集計して、まとめてください。\n\nアンケート回答:" + answer)
 
-        if GOOGLE_AI == "Gemini": # Geminiの場合はresult.content  VertexAIの場合はresult
+        if GOOGLE_AI == "GEMINI": # Geminiの場合はresult.content  VertexAIの場合はresult
             result = result.content
             
         end_date = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
